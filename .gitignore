@@ -8,3 +8,5 @@ packages/
 *.exe
 *.dll
 *.nupkg
+sample-data/
+output/

@@ -28,7 +28,12 @@ namespace pdfmaker
             //创建document实例
             Document document = new Document();
             //创建writer实例
-            PdfWriter writer = PdfWriter.GetInstance(document, new FileStream("C:\\Users\\Administrator\\Desktop\\pdf\\wbd.pdf", FileMode.Create));
+            string projectDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string inputDirectory = Path.Combine(projectDirectory, "sample-data");
+            string imageDirectory = Path.Combine(inputDirectory, "images");
+            string outputDirectory = Path.Combine(projectDirectory, "output");
+            Directory.CreateDirectory(outputDirectory);
+            PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(Path.Combine(outputDirectory, "report.pdf"), FileMode.Create));
             //打开document
             document.Open();
             //中文字体
@@ -40,9 +45,9 @@ namespace pdfmaker
             Font font3 = new Font(baseFont, 14, Font.BOLD);
             //添加属性
             document.AddTitle("Sample Technical Report");
-            document.AddSubject("PDF报告");
-            document.AddKeywords("测试");
-            document.AddCreator("visual studio 2022 preview");
+            document.AddSubject("PDF report generation example");
+            document.AddKeywords("sample, report");
+            document.AddCreator("PDF Maker");
             document.AddAuthor("KXH");
 
             //添加标题、单位、时间
@@ -50,7 +55,7 @@ namespace pdfmaker
             title.Alignment = 1; //0 = Left, 1 = Centre, 2 = Right
             document.Add(title);
 
-            Paragraph author = new Paragraph("Example Organization\n\n", font3);
+            Paragraph author = new Paragraph("Example Organization\n", font3);
             author.Alignment = 2;
             document.Add(author);
 
@@ -68,7 +73,7 @@ namespace pdfmaker
             document.Add(date);
 
             //添加介绍
-            string path = "C:\\Users\\Administrator\\Desktop\\pdf\\txt\\Introduction.txt";
+            string path = Path.Combine(inputDirectory, "introduction.txt");
             string[] lines = System.IO.File.ReadAllLines(path, Encoding.GetEncoding("utf-8"));
             Paragraph p = new Paragraph();
             Phrase p1 = new Phrase("一、背景介绍\n\n", font2);
@@ -81,7 +86,7 @@ namespace pdfmaker
             }
 
             //添加img1
-            iTextSharp.text.Image img1 = iTextSharp.text.Image.GetInstance("C:\\Users\\Administrator\\Desktop\\pdf\\img\\img1.jpg");
+            iTextSharp.text.Image img1 = iTextSharp.text.Image.GetInstance(Path.Combine(imageDirectory, "image-1.jpg"));
             float percentage1 = 1;
             //这里都是图片最原始的宽度与高度  
             float resizedWidht1 = img1.Width;
@@ -130,7 +135,7 @@ namespace pdfmaker
 
             //json解析
 
-            using (StreamReader reader = File.OpenText("C:\\Users\\Administrator\\Desktop\\pdf\\txt\\data.json"))
+            using (StreamReader reader = File.OpenText(Path.Combine(inputDirectory, "data.json")))
             {
                 JArray ja = (JArray)JToken.ReadFrom(new JsonTextReader(reader));
                 for (int i = 0; i < ja.Count; i++)
@@ -154,7 +159,7 @@ namespace pdfmaker
             document.Add(new Paragraph("三、航飞路线\n\n", font2));
 
             //添加img2,3
-            iTextSharp.text.Image img2 = iTextSharp.text.Image.GetInstance("C:\\Users\\Administrator\\Desktop\\pdf\\img\\img2.jpg");
+            iTextSharp.text.Image img2 = iTextSharp.text.Image.GetInstance(Path.Combine(imageDirectory, "image-2.jpg"));
             float percentage2 = 1;
             float resizedWidht2 = img2.Width;
             float resizedHeight2 = img2.Height;
@@ -175,7 +180,7 @@ namespace pdfmaker
             img2.SetAbsolutePosition(document.PageSize.Width / 2- resizedWidht2 / 2, document.PageSize.Height / 3*2 - resizedHeight2 / 2);
             document.Add(img2);
 
-            iTextSharp.text.Image img3 = iTextSharp.text.Image.GetInstance("C:\\Users\\Administrator\\Desktop\\pdf\\img\\img3.jpg");
+            iTextSharp.text.Image img3 = iTextSharp.text.Image.GetInstance(Path.Combine(imageDirectory, "image-3.jpg"));
             float percentage3 = 1;
             float resizedWidht3 = img3.Width;
             float resizedHeight3 = img3.Height;
@@ -199,7 +204,7 @@ namespace pdfmaker
             //第四页
             document.NewPage();
             document.Add(new Paragraph("四、总结\n\n", font2));
-            string path2 = "C:\\Users\\Administrator\\Desktop\\pdf\\txt\\Conclusion.txt";
+            string path2 = Path.Combine(inputDirectory, "conclusion.txt");
             string[] lines2 = System.IO.File.ReadAllLines(path2, Encoding.GetEncoding("utf-8"));
             foreach (string line in lines2)
             {
@@ -249,7 +254,8 @@ namespace pdfmaker
             cba.AddImage(img);
 
             //水印
-            iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance("C:\\Users\\Administrator\\Desktop\\pdf\\img\\sy.jpg");
+            string watermarkPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sample-data", "images", "watermark.png");
+            iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(watermarkPath);
             image.RotationDegrees = 30;//旋转角度
 
             PdfGState gs = new PdfGState();

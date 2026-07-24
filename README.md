@@ -24,14 +24,15 @@ backgrounds, and repeated image watermarks.
 
 1. Use Windows with Visual Studio and .NET Framework 4.8.
 2. Open `pdfmaker.sln` and restore the NuGet packages from `packages.config`.
-3. Update the input, output, image, and font paths in `Program.cs`.
-4. Build and run the console application.
+3. Create `sample-data`, place authorized input files under it, and review the
+   expected filenames in `Program.cs`.
+4. Build and run the console application. Generated reports are written to
+   `output/report.pdf`.
 
 ## Important Notes
 
-- The current implementation contains historical absolute Windows paths and is
-  intended as a learning prototype; configure them before execution.
+- The project uses generic relative sample paths and does not include company
+  reports, captured data, or generated binaries.
 - iTextSharp 5 uses AGPL/commercial licensing. Review its license before
   distributing an application based on this code.
-- Legacy dependencies and build artifacts remain in the repository for
-  historical reproducibility; new generated files are ignored.
+- Generated build output is excluded by `.gitignore`.
